@@ -1,40 +1,54 @@
 #init environment: source metakiller/bin/activate
 #quit environment: deactivate
-#to install PyQt5: pip3 install PyQt5
+#to install PyQt5: python3 -m pip install PyQt5
+#python -m pip install PyQt5
+#brew install pyqt
 
 from PIL import Image
 from PyQt5.QtGui import * 
-from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QFileDialog, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QFileDialog, QVBoxLayout, QPushButton, QWidget
 from pathlib import Path
 import sys
 
 class Window(QMainWindow):
     def __init__(self):
+        super().__init__()
         """ image = Image.open('./image.jpg')
         image.save('./image2.jpg') """
 
-        window = QMainWindow()
+        self.resize(300, 300)
 
         title = "Tile of window"
     
         # set the title 
-        window.setWindowTitle(title) 
+        self.setWindowTitle(title) 
 
-        home = str(Path.home())
+        self.button = QPushButton('Search Image')
+        self.button.clicked.connect(self.get_image_file)
 
-        label = QLabel('Pick the source folder of all the images you want to optimize')
+        self.label = QLabel('Pick the source folder of all the images you want to optimize')
 
-        filename = QFileDialog.getOpenFileName(self,"Open Image", home, "Image Files (*.png *.jpg *.bmp)")
+        wid = QWidget(self)
+        self.setCentralWidget(wid)
 
         layout = QVBoxLayout()
 
-        layout.addWidget(label)
-        layout.addWidget(filename)
+        #layout.addWidget(self.label)
+
+        layout.addWidget(self.label)
+        layout.addWidget(self.button)
 
         # setting  the geometry of window 
-        window.setGeometry(0, 0, 500, 300) 
+        #window.setGeometry(0, 0, 500, 300) 
 
-        window.setLayout(layout)
+        wid.setLayout(layout)
+    
+    def get_image_file(self):
+        home = str(Path.home())
+        filename, _ = QFileDialog.getOpenFileName(self, "Open Image", home, "Image Files (*.png *.jpg *.bmp)")
+
+    def optimize():
+        print("Hello World")
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
