@@ -1,26 +1,18 @@
-#init environment: source metakiller/bin/activate
-#quit environment: deactivate
-#to install PyQt5: python3 -m pip install PyQt5
-#python -m pip install PyQt5
-#brew install pyqt
-
 from PIL import Image
 from PyQt5.QtGui import * 
-from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QFileDialog, QVBoxLayout, QPushButton, QWidget
+from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QFileDialog, QVBoxLayout, QPushButton, QWidget, QMessageBox
 from pathlib import Path
 import sys
+import os
+import glob
 
-class Window(QMainWindow):
+class Metakiller(QMainWindow):
     def __init__(self):
         super().__init__()
-        """ image = Image.open('./image.jpg')
-        image.save('./image2.jpg') """
 
         self.resize(300, 300)
 
         title = "Tile of window"
-    
-        # set the title 
         self.setWindowTitle(title) 
 
         self.button = QPushButton('Search Image')
@@ -32,26 +24,43 @@ class Window(QMainWindow):
         self.setCentralWidget(wid)
 
         layout = QVBoxLayout()
-
-        #layout.addWidget(self.label)
-
         layout.addWidget(self.label)
         layout.addWidget(self.button)
-
-        # setting  the geometry of window 
-        #window.setGeometry(0, 0, 500, 300) 
 
         wid.setLayout(layout)
     
     def get_image_file(self):
         home = str(Path.home())
-        filename, _ = QFileDialog.getOpenFileName(self, "Open Image", home, "Image Files (*.png *.jpg *.bmp)")
+        dirname = QFileDialog.getExistingDirectory(self, "Select directory", home, QFileDialog.ShowDirsOnly)
+        os.chdir(dirname)
 
-    def optimize():
-        print("Hello World")
+        files = []
+        extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif']
+        
+        for ext in extensions:
+            files.extend(glob.glob(ext))
+        
+        self.optimize_files(files)
+        
+
+    def optimize_files(self, files):
+        if not os.path.exists('output'):
+            os.makedirs('output')
+
+        for file in files:
+            image = Image.open(file)
+            image.save('./output/' + file)
+
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setWindowTitle('Done')
+        msg.setText('Images were optimized')
+        msg.setInformativeText('Please look within the output folder')
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.exec_()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = Window()
-    window.show()
+    metakiller = Metakiller()
+    metakiller.show()
     sys.exit(app.exec_())
