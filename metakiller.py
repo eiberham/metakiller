@@ -1,6 +1,7 @@
 from PIL import Image
-from PyQt5.QtGui import * 
-from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QFileDialog, QVBoxLayout, QPushButton, QWidget, QMessageBox
+from PyQt5 import QtGui
+from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QFileDialog, QVBoxLayout, QPushButton, QWidget, QMessageBox, QTextEdit
 from pathlib import Path
 import sys
 import os
@@ -10,15 +11,18 @@ class Metakiller(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.resize(300, 300)
+        icon = QIcon()
+        icon.addPixmap(QPixmap('knife.png'), QIcon.Selected, QIcon.On)
+        self.setWindowIcon(icon)
+        self.resize(300, 150)
 
-        title = "Tile of window"
+        title = "Metakiller"
         self.setWindowTitle(title) 
 
-        self.button = QPushButton('Search Image')
+        self.button = QPushButton('Search Image Folder')
         self.button.clicked.connect(self.get_image_file)
 
-        self.label = QLabel('Pick the source folder of all the images you want to optimize')
+        self.label = QLabel('Pick the source folder, images will be automatically optimized')
 
         wid = QWidget(self)
         self.setCentralWidget(wid)
@@ -32,6 +36,9 @@ class Metakiller(QMainWindow):
     def get_image_file(self):
         home = str(Path.home())
         dirname = QFileDialog.getExistingDirectory(self, "Select directory", home, QFileDialog.ShowDirsOnly)
+        if dirname == '': 
+            return
+
         os.chdir(dirname)
 
         files = []
@@ -49,7 +56,7 @@ class Metakiller(QMainWindow):
 
         for file in files:
             image = Image.open(file)
-            image.save('./output/' + file)
+            image.save('./output/' + file, optimize=True, quality=30)
 
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Information)
