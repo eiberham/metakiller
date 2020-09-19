@@ -2,3 +2,4 @@
 *.jpg
 .info
 /output
+__pycache__/

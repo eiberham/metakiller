@@ -1,11 +1,13 @@
 from PIL import Image
 from PyQt5 import QtGui
 from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QFileDialog, QVBoxLayout, QPushButton, QWidget, QMessageBox, QTextEdit
+from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QFileDialog, QVBoxLayout, QPushButton, QWidget, QMessageBox, QListWidget
 from pathlib import Path
 import sys
 import os
 import glob
+
+from archive import *
 
 class Metakiller(QMainWindow):
     def __init__(self):
@@ -16,6 +18,8 @@ class Metakiller(QMainWindow):
         self.setWindowIcon(icon)
         self.resize(300, 150)
 
+        self.archives = []
+
         title = "Metakiller"
         self.setWindowTitle(title) 
 
@@ -24,12 +28,16 @@ class Metakiller(QMainWindow):
 
         self.label = QLabel('Pick the source folder, images will be automatically optimized')
 
+
+        self.list = QListWidget()
+
         wid = QWidget(self)
         self.setCentralWidget(wid)
 
         layout = QVBoxLayout()
         layout.addWidget(self.label)
         layout.addWidget(self.button)
+        layout.addWidget(self.list)
 
         wid.setLayout(layout)
     
@@ -57,6 +65,12 @@ class Metakiller(QMainWindow):
         for file in files:
             image = Image.open(file)
             image.save('./output/' + file, optimize=True, quality=30)
+
+            head, tail = os.path.split('./output/' + file)
+            self.archives.append(Archive(tail, head))
+            
+        for arch in self.archives:
+            self.list.addItem(str(arch.get_name()) + ' stale size: ' + str(arch.get_stale_size()) + ' size: ' + str(arch.get_size()) + 'bytes')
 
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Information)
