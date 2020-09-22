@@ -1,22 +1,26 @@
 from PIL import Image
 from PyQt5 import QtGui
 from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QFileDialog, QVBoxLayout, QPushButton, QWidget, QMessageBox, QListWidget
+from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QFileDialog, QVBoxLayout, QPushButton, QWidget, QMessageBox
 from pathlib import Path
 import sys
 import os
 import glob
+from pyqtgraph import PlotWidget, plot
+import pyqtgraph as pg
 
 from archive import *
+from graph import *
+
 
 class Metakiller(QMainWindow):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super(Metakiller, self).__init__(*args, **kwargs)
 
         icon = QIcon()
         icon.addPixmap(QPixmap('knife.png'), QIcon.Selected, QIcon.On)
         self.setWindowIcon(icon)
-        self.resize(300, 150)
+        self.resize(600, 650)
 
         self.archives = []
 
@@ -28,18 +32,24 @@ class Metakiller(QMainWindow):
 
         self.label = QLabel('Pick the source folder, images will be automatically optimized')
 
+        self.graph = BarGraph().draw()
 
-        self.list = QListWidget()
+        """ hour = [1,2,3,4,5,6,7,8,9,10]
+        temperature = [30,32,34,32,33,31,29,32,35,45] """
 
-        wid = QWidget(self)
-        self.setCentralWidget(wid)
+        widget = QWidget(self)
+        self.setCentralWidget(widget)
 
         layout = QVBoxLayout()
         layout.addWidget(self.label)
         layout.addWidget(self.button)
-        layout.addWidget(self.list)
 
-        wid.setLayout(layout)
+        layout.addWidget(self.graph)
+
+        # plot data: x, y values
+        # self.plotWidget.plot(hour, temperature)
+
+        widget.setLayout(layout)
     
     def get_image_file(self):
         home = str(Path.home())
@@ -63,14 +73,15 @@ class Metakiller(QMainWindow):
             os.makedirs('output')
 
         for file in files:
+            head, tail = os.path.split(file)
+            print(tail, ' ', head)
+            archive = Archive(tail, head)
+    
+            self.archives.append(archive)
+
             image = Image.open(file)
             image.save('./output/' + file, optimize=True, quality=30)
-
-            head, tail = os.path.split('./output/' + file)
-            self.archives.append(Archive(tail, head))
-            
-        for arch in self.archives:
-            self.list.addItem(str(arch.get_name()) + ' stale size: ' + str(arch.get_stale_size()) + ' size: ' + str(arch.get_size()) + 'bytes')
+            archive.set_size(os.path.getsize('./output/' + file))
 
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Information)
@@ -79,6 +90,18 @@ class Metakiller(QMainWindow):
         msg.setInformativeText('Please look within the output folder')
         msg.setStandardButtons(QMessageBox.Ok)
         msg.exec_()
+
+        self.get_graph_dictionary()
+
+    def get_graph_dictionary(self):
+        graph = {}
+        for arch in self.archives:
+            graph[arch.get_name()] = {
+                'stale' : arch.get_stale_size(),
+                'size' : arch.get_size()
+            }
+        print(graph)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

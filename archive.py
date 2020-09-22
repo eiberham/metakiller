@@ -5,7 +5,7 @@ class Archive():
         self.path = path
         self.name = name
 
-        self.stale_size = None
+        self.stale_size = 0
 
     def set_path(self, path):
         self.path = path
@@ -19,12 +19,12 @@ class Archive():
     def get_name(self):
         return self.name
 
-    def set_stale_size(self, size):
-        self.stale_size = size
-
-    def get_stale_size(self):
-        return self.stale_size
+    def set_size(self, size):
+        self.size = size
 
     def get_size(self):
-        file = self.path + '/' + self.name
+        return self.size
+
+    def get_stale_size(self):
+        file = self.path + '/' + self.name if self.path != '' else self.name
         return os.path.getsize(file)
