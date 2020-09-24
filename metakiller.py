@@ -20,7 +20,7 @@ class Metakiller(QMainWindow):
         icon = QIcon()
         icon.addPixmap(QPixmap('knife.png'), QIcon.Selected, QIcon.On)
         self.setWindowIcon(icon)
-        self.resize(600, 650)
+        self.resize(300, 350)
 
         self.archives = []
 
@@ -31,25 +31,24 @@ class Metakiller(QMainWindow):
         self.button.clicked.connect(self.get_image_file)
 
         self.label = QLabel('Pick the source folder, images will be automatically optimized')
-
-        self.graph = BarGraph().draw()
+        
 
         """ hour = [1,2,3,4,5,6,7,8,9,10]
         temperature = [30,32,34,32,33,31,29,32,35,45] """
 
-        widget = QWidget(self)
-        self.setCentralWidget(widget)
+        self.widget = QWidget(self)
+        self.setCentralWidget(self.widget)
 
-        layout = QVBoxLayout()
-        layout.addWidget(self.label)
-        layout.addWidget(self.button)
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.label)
+        self.layout.addWidget(self.button)
 
-        layout.addWidget(self.graph)
+        # self.layout.addWidget(self.graph)
 
         # plot data: x, y values
         # self.plotWidget.plot(hour, temperature)
 
-        widget.setLayout(layout)
+        self.widget.setLayout(self.layout)
     
     def get_image_file(self):
         home = str(Path.home())
@@ -97,10 +96,12 @@ class Metakiller(QMainWindow):
         graph = {}
         for arch in self.archives:
             graph[arch.get_name()] = {
-                'stale' : arch.get_stale_size(),
-                'size' : arch.get_size()
+                'a' : arch.get_stale_size(),
+                'b' : arch.get_size()
             }
         print(graph)
+        self.graph = BarGraph().draw(graph)
+        self.layout.addWidget(self.graph)
 
 
 if __name__ == '__main__':

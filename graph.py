@@ -1,22 +1,19 @@
 from pyqtgraph import PlotWidget, plot, BarGraphItem
 import numpy as np
 
-class PlotGraph(PlotWidget):
-    def __init__(self):
-        PlotWidget.__init__(self)
-        self.x = None
-        self.y = None
-    
-    def plot(self, x, y):
-        self.plot(x, y)
-
-
 class BarGraph(PlotWidget):
     def __init__(self):
         PlotWidget.__init__(self)
     
-    def draw(self):
-        item = BarGraphItem(x=np.linspace(0, 20, num=20), height=np.arange(20), width=0.3, brush='r')
+    def draw(self, graph_dictionary):
         win = plot()
-        win.addItem(item)
+        length = len(graph_dictionary)
+        print(len(graph_dictionary))
+        for key in graph_dictionary:
+            print(graph_dictionary[key].get('a'))
+            print(graph_dictionary[key].get('b'))
+            stale = BarGraphItem(x=np.arange(0, length), height=graph_dictionary[key].get('a'), width=0.3, brush='r')
+            fixed = BarGraphItem(x=np.arange(0, length), height=graph_dictionary[key].get('b'), width=0.3, brush='b')
+            win.addItem(stale)
+            win.addItem(fixed)
         return win
