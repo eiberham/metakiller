@@ -31,10 +31,6 @@ class Metakiller(QMainWindow):
         self.button.clicked.connect(self.get_image_file)
 
         self.label = QLabel('Pick the source folder, images will be automatically optimized')
-        
-
-        """ hour = [1,2,3,4,5,6,7,8,9,10]
-        temperature = [30,32,34,32,33,31,29,32,35,45] """
 
         self.widget = QWidget(self)
         self.setCentralWidget(self.widget)
@@ -42,11 +38,6 @@ class Metakiller(QMainWindow):
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.label)
         self.layout.addWidget(self.button)
-
-        # self.layout.addWidget(self.graph)
-
-        # plot data: x, y values
-        # self.plotWidget.plot(hour, temperature)
 
         self.widget.setLayout(self.layout)
     
@@ -90,17 +81,17 @@ class Metakiller(QMainWindow):
         msg.setStandardButtons(QMessageBox.Ok)
         msg.exec_()
 
-        self.get_graph_dictionary()
+        self.build_graph()
 
-    def get_graph_dictionary(self):
-        graph = {}
+    def build_graph(self):
+        graph_dictionary = {}
         for arch in self.archives:
-            graph[arch.get_name()] = {
-                'a' : arch.get_stale_size(),
-                'b' : arch.get_size()
+            graph_dictionary[arch.get_name()] = {
+                'staleSize' : arch.get_stale_size(),
+                'optimizedSize' : arch.get_size()
             }
-        print(graph)
-        self.graph = BarGraph().draw(graph)
+
+        self.graph = BarGraph().draw(graph_dictionary)
         self.layout.addWidget(self.graph)
 
 
