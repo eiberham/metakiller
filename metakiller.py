@@ -1,5 +1,5 @@
 from PIL import Image
-from PyQt5 import QtGui
+from PyQt5 import QtGui, QtCore
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QFileDialog, QVBoxLayout, QPushButton, QWidget, QMessageBox
 from pathlib import Path
@@ -20,7 +20,9 @@ class Metakiller(QMainWindow):
         icon = QIcon()
         icon.addPixmap(QPixmap('knife.png'), QIcon.Selected, QIcon.On)
         self.setWindowIcon(icon)
+        self.setIconSize(QtCore.QSize(72, 72))
         self.resize(300, 350)
+        self.setAcceptDrops(True)
 
         self.archives = []
 
@@ -40,6 +42,18 @@ class Metakiller(QMainWindow):
         self.layout.addWidget(self.button)
 
         self.widget.setLayout(self.layout)
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls:
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        for url in event.mimeData().urls():
+            #TODO: create a method to filter images on either case drag and drop or folder picker
+            print(url.toLocalFile()) 
+
     
     def get_image_file(self):
         home = str(Path.home())
@@ -64,7 +78,6 @@ class Metakiller(QMainWindow):
 
         for file in files:
             head, tail = os.path.split(file)
-            print(tail, ' ', head)
             archive = Archive(tail, head)
     
             self.archives.append(archive)
@@ -87,8 +100,8 @@ class Metakiller(QMainWindow):
         graph_dictionary = {}
         for arch in self.archives:
             graph_dictionary[arch.get_name()] = {
-                'staleSize' : arch.get_stale_size(),
-                'optimizedSize' : arch.get_size()
+                'stale' : arch.get_stale_size(),
+                'optimized' : arch.get_size()
             }
 
         self.graph = BarGraph().draw(graph_dictionary)
