@@ -6,8 +6,6 @@ from pathlib import Path
 import sys
 import os
 import glob
-from pyqtgraph import PlotWidget, plot
-import pyqtgraph as pg
 
 from archive import *
 from graph import *
@@ -50,14 +48,15 @@ class Metakiller(QMainWindow):
             event.ignore()
 
     def dropEvent(self, event):
+        dirname = None
         for url in event.mimeData().urls():
-            #TODO: create a method to filter images on either case drag and drop or folder picker
-            print(url.toLocalFile()) 
+            dirname = url.toLocalFile()
 
-    
-    def get_image_file(self):
-        home = str(Path.home())
-        dirname = QFileDialog.getExistingDirectory(self, "Select directory", home, QFileDialog.ShowDirsOnly)
+        files = self.filter_files(dirname)
+
+        self.optimize_files(files)
+
+    def filter_files(self, dirname):
         if dirname == '': 
             return
 
@@ -68,6 +67,14 @@ class Metakiller(QMainWindow):
         
         for ext in extensions:
             files.extend(glob.glob(ext))
+
+        return files
+    
+    def get_image_file(self):
+        home = str(Path.home())
+        dirname = QFileDialog.getExistingDirectory(self, "Select directory", home, QFileDialog.ShowDirsOnly)
+
+        files = self.filter_files(dirname)
         
         self.optimize_files(files)
         
