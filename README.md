@@ -14,8 +14,9 @@ Quite simple:
 
 1. Drag and drop the source folder to the drag and drop area or click the folder picker button.
 2. Find the optimized images within the "output" folder.
+3. See how much decreased in size every image in a nice bar graph.
 
-
+![screenshot](/Users/acedeno/Documents/metakiller/screenshot.png)
 
 
 
