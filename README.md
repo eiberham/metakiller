@@ -16,7 +16,7 @@ Quite simple:
 2. Find the optimized images within the "output" folder.
 3. See how much decreased in size every image in a nice bar graph.
 
-![screenshot](/Users/acedeno/Documents/metakiller/screenshot.png)
+![screenshot](screenshot.png)
 
 
 
