@@ -20,4 +20,7 @@ Quite simple:
 
 
 
- 
+##  How to create an installer out of it ?
+
+In order to create a shareable version of this application so that it can run in other machines you can refer to this [gist](https://gist.github.com/eiberham/039ae8334cc35d68c8961e35ced0af71) and follow the process step by step
+
