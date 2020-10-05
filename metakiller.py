@@ -24,20 +24,30 @@ class Metakiller(QMainWindow):
 
         self.archives = []
 
-        title = "Metakiller"
-        self.setWindowTitle(title) 
+        self.setWindowTitle('Metakiller') 
 
         self.button = QPushButton('Search Image Folder')
         self.button.clicked.connect(self.get_image_file)
 
-        self.label = QLabel('Pick the source folder, images will be automatically optimized')
+        self.label = QLabel('Pick the source folder, or drag and drop in the rectagled area')
 
         self.widget = QWidget(self)
         self.setCentralWidget(self.widget)
 
         self.layout = QVBoxLayout()
+        self.dropzone = QLabel(self)
+        self.dropzone.setScaledContents(True)
+        pixmap = QPixmap('ph.png')
+        
+        pixmap = pixmap.scaled(QtCore.QSize(200, 300), QtCore.Qt.IgnoreAspectRatio)
+        self.dropzone.setPixmap(pixmap)
+        self.dropzone.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.layout.addWidget(self.dropzone)
+        self.layout.addStretch(1)
         self.layout.addWidget(self.label)
         self.layout.addWidget(self.button)
+        
 
         self.widget.setLayout(self.layout)
 
@@ -72,7 +82,7 @@ class Metakiller(QMainWindow):
     
     def get_image_file(self):
         home = str(Path.home())
-        dirname = QFileDialog.getExistingDirectory(self, "Select directory", home, QFileDialog.ShowDirsOnly)
+        dirname = QFileDialog.getExistingDirectory(self, 'Select directory', home, QFileDialog.ShowDirsOnly)
 
         files = self.filter_files(dirname)
         
@@ -111,8 +121,8 @@ class Metakiller(QMainWindow):
                 'optimized' : arch.get_size()
             }
 
-        self.graph = BarGraph().draw(graph_dictionary)
-        self.layout.addWidget(self.graph)
+        BarGraph().draw(graph_dictionary)
+        
 
 
 if __name__ == '__main__':

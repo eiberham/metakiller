@@ -1,5 +1,4 @@
 from pyqtgraph import PlotWidget, plot, BarGraphItem, PlotWindow, ScatterPlotItem, TextItem
-
 import pyqtgraph as pg
 import numpy as np
 import math
@@ -32,4 +31,5 @@ class BarGraph(PlotWidget):
             self.win.addItem(text)
 
         self.win.getPlotItem().getAxis('bottom').setTicks([ xAxisNames ])
+        self.win.getPlotItem().getAxis('bottom').setTicksAngle(45)
         return self.win
