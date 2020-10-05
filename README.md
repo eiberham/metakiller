@@ -16,7 +16,7 @@ Quite simple:
 2. Find the optimized images within the "output" folder.
 3. See how much decreased in size every image in a nice bar graph.
 
-![screenshot](screenshot.png)
+![recording](recording.gif)
 
 
 
@@ -24,3 +24,6 @@ Quite simple:
 
 In order to create a shareable version of this application so that it can run in other machines you can refer to this [gist](https://gist.github.com/eiberham/039ae8334cc35d68c8961e35ced0af71) and follow the process step by step
 
+## Important
+
+In order to run this code, you should add the proposal code snippet located [here](https://github.com/pyqtgraph/pyqtgraph/issues/322) to the axis item class of pyqtgraph, unfortunately the latest version of it doesn't allow x axis label rotations so texts overlaps and the mentioned feature hasn't been added to the library yet.
