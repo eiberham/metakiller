@@ -11,6 +11,7 @@ class BarGraph(PlotWidget):
     def draw(self, graph_dictionary):
         self.win = plot()
         self.win.setTitle('Summary')
+        self.win.addLegend()
         xAxisNames = [ (list(graph_dictionary).index(v), v) for v in list(graph_dictionary.keys()) ]
 
         old = []
@@ -18,8 +19,8 @@ class BarGraph(PlotWidget):
         for key in graph_dictionary:
             old.append(graph_dictionary[key].get('stale'))
             new.append(graph_dictionary[key].get('optimized'))
-        stale = BarGraphItem(x=range(0, len(old)), height=old, width=0.3, brush='r')
-        fixed = BarGraphItem(x=range(0, len(new)), pen=pg.mkPen(None), brush='b', name='enhanced', height=new, width=0.3)
+        stale = BarGraphItem(x=range(0, len(old)), pen='r', height=old, width=0.3, brush='r', name='stale')
+        fixed = BarGraphItem(x=range(0, len(new)), pen='b', brush='b', name='optimized', height=new, width=0.3)
 
         self.win.addItem(stale)
         self.win.addItem(fixed)
